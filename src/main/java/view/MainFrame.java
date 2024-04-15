@@ -9,6 +9,8 @@ public class MainFrame extends JFrame implements ShapeObserver {
     ShapeTableModel tableModel;
 
     public MainFrame() {
+        DrawController drawController = DrawController.getInstanceOf();
+        drawController.addObserver(this);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
@@ -18,7 +20,6 @@ public class MainFrame extends JFrame implements ShapeObserver {
         Toolbar toolbar = new Toolbar();
         this.add(toolbar, BorderLayout.NORTH);
 
-        ((DrawingPanel) panel).addObserver(this);
         panel.setPreferredSize(new Dimension(400, 800));
         this.getContentPane().add(panel);
 
@@ -26,7 +27,7 @@ public class MainFrame extends JFrame implements ShapeObserver {
         this.setJMenuBar(menubar);
 
         ShapesTable shapesTable = new ShapesTable();
-        tableModel = new ShapeTableModel(DrawController.getInstanceOf().shapes);
+        tableModel = new ShapeTableModel(drawController.getShapes());
         shapesTable.setModel(tableModel);
         JScrollPane scrollPane = new JScrollPane(shapesTable);
         this.add(scrollPane, BorderLayout.EAST);

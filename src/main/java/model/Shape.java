@@ -22,7 +22,7 @@ public abstract class Shape {
     }
 
     public boolean isSelected() {
-        return DrawController.getInstanceOf().selectedShape == this;
+        return DrawController.getInstanceOf().getSelectedShape() == this;
     }
 
     abstract public boolean contains(int x, int y);

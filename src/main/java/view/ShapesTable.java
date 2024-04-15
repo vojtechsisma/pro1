@@ -7,6 +7,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class ShapesTable extends JTable {
+    private final DrawController controller = DrawController.getInstanceOf();
+
     public ShapesTable() {
         super();
         this.setFillsViewportHeight(true);
@@ -23,7 +25,7 @@ public class ShapesTable extends JTable {
     void handleSelection() {
         int selectedRow = getSelectedRow();
         if (selectedRow != -1) {
-            DrawController.getInstanceOf().selectedShape = DrawController.getInstanceOf().shapes.get(selectedRow);
+            controller.setSelectedShape(controller.getShapes().get(selectedRow));
         }
     }
 }
