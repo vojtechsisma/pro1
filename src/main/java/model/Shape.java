@@ -28,4 +28,9 @@ public abstract class Shape {
     abstract public boolean contains(int x, int y);
 
     abstract public List<String> getTableValues();
+
+    public void move(int x, int y) {
+        posX = x;
+        posY = y;
+    }
 }

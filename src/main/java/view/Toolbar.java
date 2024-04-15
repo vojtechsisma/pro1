@@ -1,5 +1,7 @@
 package view;
 
+import controller.ToolbarController;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,13 +11,14 @@ public class Toolbar extends JToolBar {
     // TODO: Implement toolbar
     Toolbar() {
         super();
-        JButton addShapeButton = new JButton("Add Shape");
-        addShapeButton.addActionListener(new ActionListener() {
+        ToolbarController controller = new ToolbarController();
+        JButton removeShape = new JButton("Odstranit tvar");
+        removeShape.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Add Shape button clicked");
+                controller.removeSelectedShape();
             }
         });
-        add(addShapeButton);
+        add(removeShape);
     }
 }

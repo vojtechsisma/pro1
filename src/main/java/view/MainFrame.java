@@ -20,7 +20,9 @@ public class MainFrame extends JFrame implements ShapeObserver {
         Toolbar toolbar = new Toolbar();
         this.add(toolbar, BorderLayout.NORTH);
 
-        panel.setPreferredSize(new Dimension(400, 800));
+        setMinimumSize(new Dimension(500, 500));
+        panel.setPreferredSize(new Dimension(800, 800));
+        panel.setFocusable(true);
         this.getContentPane().add(panel);
 
         Menubar menubar = new Menubar();
@@ -39,5 +41,10 @@ public class MainFrame extends JFrame implements ShapeObserver {
     @Override
     public void shapeAdded() {
         tableModel.addRow();
+    }
+
+    @Override
+    public void shapeRemoved() {
+        tableModel.removeRow();
     }
 }

@@ -37,4 +37,8 @@ public class ShapeTableModel extends AbstractTableModel {
     public void addRow() {
         fireTableRowsInserted(shapes.size() - 1, shapes.size() - 1);
     }
+
+    public void removeRow() {
+        fireTableRowsDeleted(shapes.size() - 1, shapes.size() - 1);
+    }
 }

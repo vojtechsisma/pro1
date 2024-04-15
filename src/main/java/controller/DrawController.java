@@ -8,6 +8,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.awt.event.KeyEvent.*;
+
 public class DrawController {
     private static DrawController instance;
     private final List<ShapeObserver> observers;
@@ -30,6 +32,12 @@ public class DrawController {
 
     public ArrayList<Shape> getShapes() {
         return shapes;
+    }
+
+    public void removeSelectedShape() {
+        shapes.remove(selectedShape);
+        selectedShape = null;
+        notifyObserversShapeRemoved();
     }
 
     public void setSelectedShape(Shape shape) {
@@ -68,17 +76,30 @@ public class DrawController {
         startX = x;
         startY = y;
 
-        for (Shape shape : shapes) {
-            if (shape.contains(startX, startY)) {
-                selectedShape = shape;
-                return;
-            }
-        }
-
+        setSelectedShape(null);
         isDrawing = true;
     }
 
+    int initalX, initialY;
+
+    public boolean handleMouseSelection(int x, int y) {
+        isDrawing = false;
+        for (Shape shape : shapes) {
+            if (shape.contains(x, y)) {
+                selectedShape = shape;
+                initalX = shape.getPosX();
+                initialY = shape.getPosY();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void handleMouseReleased(int x, int y) {
+        if (!isDrawing) {
+            return;
+        }
+
         endX = x;
         endY = y;
         isDrawing = false;
@@ -100,6 +121,48 @@ public class DrawController {
             endX = x;
             endY = y;
         }
+
+        if (selectedShape != null) {
+            selectedShape.move(x, y);
+        }
+    }
+
+    private boolean shiftPressed = false;
+
+    // TODO: add observer on shape move
+    public void handleKeyPressed(int keyCode) {
+        if (selectedShape == null) {
+            return;
+        }
+
+        int moveStep = shiftPressed ? 10 : 1;
+
+        switch (keyCode) {
+            case VK_LEFT:
+                selectedShape.move(selectedShape.getPosX() - moveStep, selectedShape.getPosY());
+                break;
+            case VK_UP:
+                selectedShape.move(selectedShape.getPosX(), selectedShape.getPosY() - moveStep);
+                break;
+            case VK_RIGHT:
+                selectedShape.move(selectedShape.getPosX() + moveStep, selectedShape.getPosY());
+                break;
+            case VK_DOWN:
+                selectedShape.move(selectedShape.getPosX(), selectedShape.getPosY() + moveStep);
+                break;
+            case VK_DELETE:
+                removeSelectedShape();
+                break;
+            case VK_SHIFT:
+                shiftPressed = true;
+                break;
+        }
+    }
+
+    public void handleKeyReleased(int keyCode) {
+        if (keyCode == VK_SHIFT) {
+            shiftPressed = false;
+        }
     }
 
     public void addObserver(ShapeObserver observer) {
@@ -109,6 +172,12 @@ public class DrawController {
     private void notifyObserversShapeAdded() {
         for (ShapeObserver observer : observers) {
             observer.shapeAdded();
+        }
+    }
+
+    private void notifyObserversShapeRemoved() {
+        for (ShapeObserver observer : observers) {
+            observer.shapeRemoved();
         }
     }
 
