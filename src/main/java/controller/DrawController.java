@@ -2,6 +2,7 @@ package controller;
 
 import model.Rectangle;
 import model.Shape;
+import model.ShapeTool;
 import view.ShapeObserver;
 
 import java.awt.*;
@@ -15,8 +16,11 @@ public class DrawController {
     private final List<ShapeObserver> observers;
     private final ArrayList<Shape> shapes;
     private Shape selectedShape = null;
+    private Shape shapeToDraw = null;
     private int startX, startY, endX, endY;
     private boolean isDrawing = false;
+    private Color selectedColor = null;
+    private ShapeTool selectedTool = ShapeTool.RECTANGLE;
 
     private DrawController() {
         shapes = new ArrayList<>();
@@ -42,6 +46,11 @@ public class DrawController {
 
     public void setSelectedShape(Shape shape) {
         selectedShape = shape;
+        notifyObserversShapeSelected();
+    }
+
+    public int getSelectedShapeIndex() {
+        return shapes.indexOf(selectedShape);
     }
 
     public Shape getSelectedShape() {
@@ -52,31 +61,49 @@ public class DrawController {
         Graphics2D g2d = (Graphics2D) g;
 
         if (isDrawing) {
-            drawShapePreview(g);
+            switch (selectedTool) {
+                case RECTANGLE:
+                    int width = Math.abs(endX - startX);
+                    int height = Math.abs(endY - startY);
+                    int x = Math.min(startX, endX);
+                    int y = Math.min(startY, endY);
+
+                    shapeToDraw.setPosX(x);
+                    shapeToDraw.setPosY(y);
+                    ((Rectangle) shapeToDraw).setWidth(width);
+                    ((Rectangle) shapeToDraw).setHeight(height);
+                    shapeToDraw.draw(g2d);
+                    break;
+                case OVAl:
+                    break;
+                case LINE:
+                    break;
+            }
         }
 
         for (Shape shape : shapes) {
-            if (shape.isSelected()) {
-                g2d.setColor(Color.RED);
-            } else {
-                g2d.setColor(Color.BLACK);
-            }
-
-            if (shape instanceof Rectangle) {
-                drawRectangle((Rectangle) shape, g);
-            }
+            shape.draw(g2d);
         }
-    }
-
-    private void drawRectangle(Rectangle rectangle, Graphics g) {
-        g.drawRect(rectangle.getPosX(), rectangle.getPosY(), rectangle.getWidth(), rectangle.getHeight());
     }
 
     public void handleMousePressed(int x, int y) {
         startX = x;
         startY = y;
 
-        setSelectedShape(null);
+        Shape shapeToDraw = null;
+
+        switch (selectedTool) {
+            case RECTANGLE:
+                shapeToDraw = new Rectangle(x, y, selectedColor, 0, 0);
+                break;
+            case OVAl:
+                break;
+            case LINE:
+                break;
+        }
+
+        this.shapeToDraw = shapeToDraw;
+        selectedShape = null;
         isDrawing = true;
     }
 
@@ -86,7 +113,8 @@ public class DrawController {
         isDrawing = false;
         for (Shape shape : shapes) {
             if (shape.contains(x, y)) {
-                selectedShape = shape;
+                setSelectedShape(shape);
+                selectedColor = shape.getFill();
                 initalX = shape.getPosX();
                 initialY = shape.getPosY();
                 return true;
@@ -111,13 +139,15 @@ public class DrawController {
             return;
         }
 
-        Rectangle rectangle = new Rectangle(Math.min(startX, endX), Math.min(startY, endY), width, height);
-        shapes.add(rectangle);
+        shapes.add(shapeToDraw);
+        setSelectedShape(shapeToDraw);
         notifyObserversShapeAdded();
     }
 
     public void handleMouseDragged(int x, int y) {
         if (isDrawing) {
+            shapeToDraw.setPosX(x);
+            shapeToDraw.setPosY(y);
             endX = x;
             endY = y;
         }
@@ -181,11 +211,23 @@ public class DrawController {
         }
     }
 
-    public void drawShapePreview(Graphics g) {
-        int width = Math.abs(endX - startX);
-        int height = Math.abs(endY - startY);
-        int x = Math.min(startX, endX);
-        int y = Math.min(startY, endY);
-        g.drawRect(x, y, width, height);
+    private void notifyObserversShapeFilled() {
+        for (ShapeObserver observer : observers) {
+            observer.shapeFilled();
+        }
+    }
+
+    private void notifyObserversShapeSelected() {
+        for (ShapeObserver observer : observers) {
+            observer.shapeSelected();
+        }
+    }
+
+    public void setColor(Color color) {
+        this.selectedColor = color;
+        if (selectedShape != null) {
+            selectedShape.setFill(color);
+            notifyObserversShapeFilled();
+        }
     }
 }

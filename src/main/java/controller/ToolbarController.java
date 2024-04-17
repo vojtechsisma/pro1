@@ -1,6 +1,7 @@
 package controller;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ToolbarController {
     DrawController drawController = DrawController.getInstanceOf();
@@ -11,5 +12,9 @@ public class ToolbarController {
         else {
             JOptionPane.showMessageDialog(null, "Není vybrán žádný tvar!", "Chyba", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    public void setColor(Color color) {
+        drawController.setColor(color);
     }
 }

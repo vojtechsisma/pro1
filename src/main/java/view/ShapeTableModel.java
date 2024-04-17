@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ShapeTableModel extends AbstractTableModel {
     private ArrayList<Shape> shapes;
-    private String[] columnNames = {"Tvar", "x", "y", "Šířka", "Výška"};
+    private String[] columnNames = {"Tvar", "x", "y", "Šířka", "Výška", "Výplň"};
 
     public ShapeTableModel(ArrayList<Shape> shapes) {
         this.shapes = shapes;

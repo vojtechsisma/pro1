@@ -7,6 +7,7 @@ import java.awt.*;
 
 public class MainFrame extends JFrame implements ShapeObserver {
     ShapeTableModel tableModel;
+    ShapesTable shapesTable;
 
     public MainFrame() {
         DrawController drawController = DrawController.getInstanceOf();
@@ -28,7 +29,7 @@ public class MainFrame extends JFrame implements ShapeObserver {
         Menubar menubar = new Menubar();
         this.setJMenuBar(menubar);
 
-        ShapesTable shapesTable = new ShapesTable();
+        shapesTable = new ShapesTable();
         tableModel = new ShapeTableModel(drawController.getShapes());
         shapesTable.setModel(tableModel);
         JScrollPane scrollPane = new JScrollPane(shapesTable);
@@ -46,5 +47,19 @@ public class MainFrame extends JFrame implements ShapeObserver {
     @Override
     public void shapeRemoved() {
         tableModel.removeRow();
+    }
+
+    @Override
+    public void shapeFilled() {
+        tableModel.fireTableDataChanged();
+    }
+
+    @Override
+    public void shapeSelected() {
+        DrawController drawController = DrawController.getInstanceOf();
+        int index = drawController.getSelectedShapeIndex();
+        if (index != -1 && index < tableModel.getRowCount()) {
+            shapesTable.setRowSelectionInterval(index, index);
+        }
     }
 }
