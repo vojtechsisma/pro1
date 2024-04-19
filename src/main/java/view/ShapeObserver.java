@@ -5,4 +5,5 @@ public interface ShapeObserver {
     void shapeRemoved();
     void shapeFilled();
     void shapeSelected();
+    void shapeMoved();
 }

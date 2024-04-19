@@ -95,4 +95,9 @@ public class DrawingPanel extends JPanel implements ShapeObserver {
     public void shapeSelected() {
         repaint();
     }
+
+    @Override
+    public void shapeMoved() {
+
+    }
 }

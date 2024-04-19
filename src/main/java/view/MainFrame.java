@@ -82,4 +82,10 @@ public class MainFrame extends JFrame implements ShapeObserver {
         }
         shapesTable.clearSelection();
     }
+
+    @Override
+    public void shapeMoved() {
+        tableModel.fireTableDataChanged();
+        shapeSelected();
+    }
 }

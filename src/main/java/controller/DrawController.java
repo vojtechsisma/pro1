@@ -184,12 +184,12 @@ public class DrawController {
             int xPos = x - offsetX;
             int yPos = y - offsetY;
             selectedShape.move(xPos, yPos);
+            notifyObserversShapeMoved();
         }
     }
 
     private boolean shiftPressed = false;
 
-    // TODO: add observer on shape move
     public void handleKeyPressed(int keyCode) {
         if (selectedShape == null) {
             return;
@@ -201,15 +201,19 @@ public class DrawController {
         switch (keyCode) {
             case VK_LEFT:
                 selectedShape.move(selectedShape.getPosX() - moveStep, selectedShape.getPosY());
+                notifyObserversShapeMoved();
                 break;
             case VK_UP:
                 selectedShape.move(selectedShape.getPosX(), selectedShape.getPosY() - moveStep);
+                notifyObserversShapeMoved();
                 break;
             case VK_RIGHT:
                 selectedShape.move(selectedShape.getPosX() + moveStep, selectedShape.getPosY());
+                notifyObserversShapeMoved();
                 break;
             case VK_DOWN:
                 selectedShape.move(selectedShape.getPosX(), selectedShape.getPosY() + moveStep);
+                notifyObserversShapeMoved();
                 break;
             case VK_DELETE:
                 removeSelectedShape();
@@ -278,6 +282,12 @@ public class DrawController {
     private void notifyObserversFileSavedStatus(boolean saved) {
         for (StatusBarObserver observer : statusObservers) {
             observer.fileSavedStatus(saved);
+        }
+    }
+
+    private void notifyObserversShapeMoved() {
+        for (ShapeObserver observer : observers) {
+            observer.shapeMoved();
         }
     }
 
