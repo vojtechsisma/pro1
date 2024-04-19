@@ -1,8 +1,8 @@
 package controller;
 
+import model.*;
 import model.Rectangle;
 import model.Shape;
-import model.ShapeTool;
 import view.ShapeObserver;
 
 import java.awt.*;
@@ -34,6 +34,10 @@ public class DrawController {
         return instance;
     }
 
+    public void setTool(ShapeTool tool) {
+        selectedTool = tool;
+    }
+
     public ArrayList<Shape> getShapes() {
         return shapes;
     }
@@ -60,14 +64,14 @@ public class DrawController {
     public void drawItems(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
+        int width = Math.abs(endX - startX);
+        int height = Math.abs(endY - startY);
+        int x = Math.min(startX, endX);
+        int y = Math.min(startY, endY);
+
         if (isDrawing) {
             switch (selectedTool) {
                 case RECTANGLE:
-                    int width = Math.abs(endX - startX);
-                    int height = Math.abs(endY - startY);
-                    int x = Math.min(startX, endX);
-                    int y = Math.min(startY, endY);
-
                     shapeToDraw.setPosX(x);
                     shapeToDraw.setPosY(y);
                     ((Rectangle) shapeToDraw).setWidth(width);
@@ -75,8 +79,18 @@ public class DrawController {
                     shapeToDraw.draw(g2d);
                     break;
                 case OVAl:
+                    shapeToDraw.setPosX(x);
+                    shapeToDraw.setPosY(y);
+                    ((Oval) shapeToDraw).setWidth(width);
+                    ((Oval) shapeToDraw).setHeight(height);
+                    shapeToDraw.draw(g2d);
                     break;
                 case LINE:
+                    shapeToDraw.setPosX(startX);
+                    shapeToDraw.setPosY(startY);
+                    ((Line) shapeToDraw).setEndX(endX);
+                    ((Line) shapeToDraw).setEndY(endY);
+                    shapeToDraw.draw(g2d);
                     break;
             }
         }
@@ -97,8 +111,10 @@ public class DrawController {
                 shapeToDraw = new Rectangle(x, y, selectedColor, 0, 0);
                 break;
             case OVAl:
+                shapeToDraw = new Oval(x, y, selectedColor, 0, 0);
                 break;
             case LINE:
+                shapeToDraw = new Line(x, y, selectedColor, 0, 0);
                 break;
         }
 

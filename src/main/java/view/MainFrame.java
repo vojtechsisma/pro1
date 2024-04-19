@@ -60,6 +60,8 @@ public class MainFrame extends JFrame implements ShapeObserver {
         int index = drawController.getSelectedShapeIndex();
         if (index != -1 && index < tableModel.getRowCount()) {
             shapesTable.setRowSelectionInterval(index, index);
+            return;
         }
+        shapesTable.clearSelection();
     }
 }

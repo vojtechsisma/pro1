@@ -1,13 +1,18 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.JsonAdapter;
 import controller.DrawController;
 
 import java.awt.*;
 import java.util.List;
 
+@JsonAdapter(ShapeAdapter.class)
 public abstract class Shape {
     private int posX;
     private int posY;
+
+    @JsonAdapter(ColorAdapter.class)
     private Color fill;
 
     public Shape(int posX, int posY, Color fill) {
@@ -55,5 +60,9 @@ public abstract class Shape {
     public void move(int x, int y) {
         posX = x;
         posY = y;
+    }
+
+    public String toJson() {
+        return new Gson().toJson(this);
     }
 }

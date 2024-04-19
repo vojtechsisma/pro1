@@ -6,16 +6,16 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rectangle extends Shape {
+public class Oval extends Shape {
     private int width;
     private int height;
-    private ShapeTool shape = ShapeTool.RECTANGLE;
+    private ShapeTool shape = ShapeTool.OVAl;
 
-    public Rectangle() {
+    public Oval() {
         super(0, 0, null);
     }
 
-    public Rectangle(int posX, int posY, Color fill, int width, int height) {
+    public Oval(int posX, int posY, Color fill, int width, int height) {
         super(posX, posY, fill);
         this.width = width;
         this.height = height;
@@ -39,7 +39,7 @@ public class Rectangle extends Shape {
 
     @Override
     public String toString() {
-        return "Rectangle at (" + getPosX() + ", " + getPosY() + ") with width " + width + " and height " + height + " and fill " + getFill();
+        return "Oval at (" + getPosX() + ", " + getPosY() + ") with width " + width + " and height " + height + " and fill " + getFill();
     }
 
     @Override
@@ -48,9 +48,9 @@ public class Rectangle extends Shape {
     }
 
     @Override
-    public List<String> getTableValues() {
+    public java.util.List<String> getTableValues() {
         List<String> values = new ArrayList<>();
-        values.add("Obdélník");
+        values.add("Ovál");
         values.add(String.valueOf(getPosX()));
         values.add(String.valueOf(getPosY()));
         values.add(String.valueOf(width));
@@ -67,11 +67,11 @@ public class Rectangle extends Shape {
 
         if (this.getFill() != null) {
             g.setColor(this.getFill());
-            g.fillRect(this.getPosX(), this.getPosY(), width, height);
+            g.fillOval(this.getPosX(), this.getPosY(), width, height);
             return;
         }
         g.setColor(Color.BLACK);
-        g.drawRect(this.getPosX(), this.getPosY(), width, height);
+        g.drawOval(this.getPosX(), this.getPosY(), width, height);
     }
 
     @Override
@@ -80,11 +80,11 @@ public class Rectangle extends Shape {
                 0, new float[]{6}, 0);
         ((Graphics2D) g).setStroke(dashed);
         g.setColor(Color.RED);
-        g.drawRect(this.getPosX() - 2, this.getPosY() - 2, width + 4, height + 4);
+        g.drawOval(this.getPosX() - 2, this.getPosY() - 2, width + 4, height + 4);
         ((Graphics2D) g).setStroke(new BasicStroke());
     }
 
-    public Rectangle fromJson(String json) {
-        return new Gson().fromJson(json, Rectangle.class);
+    public Oval fromJson(String json) {
+        return new Gson().fromJson(json, Oval.class);
     }
 }
