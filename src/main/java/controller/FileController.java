@@ -3,14 +3,17 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import model.Shape;
 import model.ShapeDeserializer;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class FileController {
@@ -47,6 +50,31 @@ public class FileController {
             drawController.setChangesSaved(true);
         } catch (IOException | JsonParseException e) {
             throw new IOException("Failed to load file");
+        }
+    }
+
+    public static void saveImage(JPanel panel, String filePath) throws IOException {
+        DrawController drawController = DrawController.getInstanceOf();
+        Dimension size = panel.getSize();
+
+        BufferedImage image = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
+
+        panel.setBackground(Color.WHITE);
+        Shape selectedShape = drawController.getSelectedShape();
+        drawController.setSelectedShape(null);
+
+        Graphics2D g2d = image.createGraphics();
+        panel.paint(g2d);
+        g2d.dispose();
+
+        panel.setBackground(Color.lightGray);
+        drawController.setSelectedShape(selectedShape);
+
+        try {
+            File file = new File(filePath);
+            ImageIO.write(image, "png", file);
+        } catch (IOException ex) {
+            throw new IOException("Failed to save image");
         }
     }
 }

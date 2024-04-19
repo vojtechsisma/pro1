@@ -41,7 +41,7 @@ public class MainFrame extends JFrame implements ShapeObserver {
         panel.setFocusable(true);
         this.getContentPane().add(panel);
 
-        Menubar menubar = new Menubar();
+        Menubar menubar = new Menubar(panel);
         this.setJMenuBar(menubar);
 
         shapesTable = new ShapesTable();

@@ -2,6 +2,7 @@ package controller;
 
 import model.ShapeTool;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -25,5 +26,9 @@ public class MenuController {
 
     public void loadJson(File file) throws IOException {
         FileController.loadJson(file);
+    }
+
+    public void saveImage(JPanel panel, String filePath) throws IOException {
+        FileController.saveImage(panel, filePath);
     }
 }

@@ -10,15 +10,19 @@ import java.io.File;
 import java.io.IOException;
 
 public class Menubar extends JMenuBar {
+    JPanel parent;
 
-    // TODO: Implement menubar
-    Menubar() {
+    Menubar(JPanel parent) {
+        super();
+        this.parent = parent;
+
         MenuController controller = new MenuController();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new java.io.File("."));
 
         JMenu file = new JMenu("Soubor");
-        JMenuItem saveJson = new JMenuItem("Uložit JSON");
+        JMenu save = new JMenu("Uložit");
+        JMenuItem saveJson = new JMenuItem("JSON");
         saveJson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -33,7 +37,25 @@ public class Menubar extends JMenuBar {
                 }
             }
         });
-        file.add(saveJson);
+        save.add(saveJson);
+
+        JMenuItem saveImage = new JMenuItem("Obrázek");
+        saveImage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    fileChooser.setSelectedFile(new File("image.png"));
+                    int status = fileChooser.showSaveDialog(null);
+                    if (status == JFileChooser.APPROVE_OPTION) {
+                        controller.saveImage(parent, fileChooser.getSelectedFile().getAbsolutePath());
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Chyba při ukládání souboru", "Chyba", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        save.add(saveImage);
+        file.add(save);
 
         JMenuItem loadJson = new JMenuItem("Načíst JSON");
         loadJson.addActionListener(new ActionListener() {
