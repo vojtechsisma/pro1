@@ -123,7 +123,7 @@ public class DrawController {
         isDrawing = true;
     }
 
-    int initalX, initialY;
+    private int offsetX, offsetY;
 
     public boolean handleMouseSelection(int x, int y) {
         isDrawing = false;
@@ -131,8 +131,8 @@ public class DrawController {
             if (shape.contains(x, y)) {
                 setSelectedShape(shape);
                 selectedColor = shape.getFill();
-                initalX = shape.getPosX();
-                initialY = shape.getPosY();
+                offsetX = x - shape.getPosX();
+                offsetY = y - shape.getPosY();
                 return true;
             }
         }
@@ -169,7 +169,9 @@ public class DrawController {
         }
 
         if (selectedShape != null) {
-            selectedShape.move(x, y);
+            int xPos = x - offsetX;
+            int yPos = y - offsetY;
+            selectedShape.move(xPos, yPos);
         }
     }
 
