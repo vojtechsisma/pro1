@@ -19,3 +19,7 @@ javadoc:
 
 clean:
 	$(MVN) clean
+
+full-start:
+	make build
+	make run

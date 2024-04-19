@@ -9,7 +9,7 @@ import java.util.List;
 public class Oval extends Shape {
     private int width;
     private int height;
-    private ShapeTool shape = ShapeTool.OVAl;
+    private ShapeTool shape = ShapeTool.OVAL;
 
     public Oval() {
         super(0, 0, null);

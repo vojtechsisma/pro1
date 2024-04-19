@@ -2,6 +2,9 @@ package controller;
 
 import model.ShapeTool;
 
+import java.io.File;
+import java.io.IOException;
+
 public class MenuController {
     DrawController drawController = DrawController.getInstanceOf();
     public void setRectangleTool() {
@@ -9,18 +12,18 @@ public class MenuController {
     }
 
     public void setOvalTool() {
-        drawController.setTool(ShapeTool.OVAl);
+        drawController.setTool(ShapeTool.OVAL);
     }
 
     public void setLineTool() {
         drawController.setTool(ShapeTool.LINE);
     }
 
-    public void saveJson() {
-        FileController.saveJson();
+    public void saveJson(String filePath) throws IOException {
+        FileController.saveJson(filePath);
     }
 
-    public void loadJson() {
-        FileController.loadJson();
+    public void loadJson(File file) throws IOException {
+        FileController.loadJson(file);
     }
 }

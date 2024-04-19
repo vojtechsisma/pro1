@@ -3,21 +3,34 @@ package view;
 import controller.MenuController;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class Menubar extends JMenuBar {
 
     // TODO: Implement menubar
     Menubar() {
         MenuController controller = new MenuController();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new java.io.File("."));
 
         JMenu file = new JMenu("Soubor");
         JMenuItem saveJson = new JMenuItem("Uložit JSON");
         saveJson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.saveJson();
+                try {
+                    fileChooser.setSelectedFile(new File("shapes.json"));
+                    int status = fileChooser.showSaveDialog(null);
+                    if (status == JFileChooser.APPROVE_OPTION) {
+                        controller.saveJson(fileChooser.getSelectedFile().getAbsolutePath());
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Chyba při ukládání JSON souboru", "Chyba", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         file.add(saveJson);
@@ -26,7 +39,16 @@ public class Menubar extends JMenuBar {
         loadJson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.loadJson();
+                try {
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files", "json"));
+                    int status = fileChooser.showOpenDialog(null);
+                    if (status == JFileChooser.APPROVE_OPTION) {
+                        File file = fileChooser.getSelectedFile();
+                        controller.loadJson(file);
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Chyba při načítání JSON souboru", "Chyba", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         file.add(loadJson);

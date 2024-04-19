@@ -7,7 +7,6 @@ import controller.DrawController;
 import java.awt.*;
 import java.util.List;
 
-@JsonAdapter(ShapeAdapter.class)
 public abstract class Shape {
     private int posX;
     private int posY;

@@ -1,9 +1,12 @@
 package view;
 
 import controller.DrawController;
+import controller.FileController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame implements ShapeObserver {
     ShapeTableModel tableModel;
@@ -13,7 +16,20 @@ public class MainFrame extends JFrame implements ShapeObserver {
         DrawController drawController = DrawController.getInstanceOf();
         drawController.addObserver(this);
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                if (!drawController.isChangesSaved()) {
+                    int result = JOptionPane.showConfirmDialog(MainFrame.this, "Máte neuložené změny, opravdu chcete program ukončit?", "Neuložené změny", JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
+                } else {
+                    dispose();
+                }
+            }
+
+        });
         this.setLocationRelativeTo(null);
 
         JPanel panel = new DrawingPanel();
@@ -34,6 +50,9 @@ public class MainFrame extends JFrame implements ShapeObserver {
         shapesTable.setModel(tableModel);
         JScrollPane scrollPane = new JScrollPane(shapesTable);
         this.add(scrollPane, BorderLayout.EAST);
+
+        StatusBar statusBar = new StatusBar();
+        this.add(statusBar, BorderLayout.SOUTH);
 
         this.pack();
         this.setVisible(true);

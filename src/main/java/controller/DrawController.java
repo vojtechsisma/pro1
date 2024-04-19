@@ -4,6 +4,7 @@ import model.*;
 import model.Rectangle;
 import model.Shape;
 import view.ShapeObserver;
+import view.StatusBarObserver;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import static java.awt.event.KeyEvent.*;
 public class DrawController {
     private static DrawController instance;
     private final List<ShapeObserver> observers;
+    private final List<StatusBarObserver> statusObservers;
     private final ArrayList<Shape> shapes;
     private Shape selectedShape = null;
     private Shape shapeToDraw = null;
@@ -21,10 +23,12 @@ public class DrawController {
     private boolean isDrawing = false;
     private Color selectedColor = null;
     private ShapeTool selectedTool = ShapeTool.RECTANGLE;
+    private boolean changesSaved = true;
 
     private DrawController() {
         shapes = new ArrayList<>();
         observers = new ArrayList<>();
+        statusObservers = new ArrayList<>();
     }
 
     public static DrawController getInstanceOf() {
@@ -36,6 +40,7 @@ public class DrawController {
 
     public void setTool(ShapeTool tool) {
         selectedTool = tool;
+        notifyObserversToolChanged(tool);
     }
 
     public ArrayList<Shape> getShapes() {
@@ -44,7 +49,7 @@ public class DrawController {
 
     public void removeSelectedShape() {
         shapes.remove(selectedShape);
-        selectedShape = null;
+        selectedShape = shapes.isEmpty() ? null : shapes.get(shapes.size() - 1);
         notifyObserversShapeRemoved();
     }
 
@@ -59,6 +64,11 @@ public class DrawController {
 
     public Shape getSelectedShape() {
         return selectedShape;
+    }
+
+    public void setChangesSaved(boolean saved) {
+        changesSaved = saved;
+        notifyObserversFileSavedStatus(saved);
     }
 
     public void drawItems(Graphics g) {
@@ -78,7 +88,7 @@ public class DrawController {
                     ((Rectangle) shapeToDraw).setHeight(height);
                     shapeToDraw.draw(g2d);
                     break;
-                case OVAl:
+                case OVAL:
                     shapeToDraw.setPosX(x);
                     shapeToDraw.setPosY(y);
                     ((Oval) shapeToDraw).setWidth(width);
@@ -110,7 +120,7 @@ public class DrawController {
             case RECTANGLE:
                 shapeToDraw = new Rectangle(x, y, selectedColor, 0, 0);
                 break;
-            case OVAl:
+            case OVAL:
                 shapeToDraw = new Oval(x, y, selectedColor, 0, 0);
                 break;
             case LINE:
@@ -156,6 +166,7 @@ public class DrawController {
         }
 
         shapes.add(shapeToDraw);
+        setChangesSaved(false);
         setSelectedShape(shapeToDraw);
         notifyObserversShapeAdded();
     }
@@ -169,6 +180,7 @@ public class DrawController {
         }
 
         if (selectedShape != null) {
+            setChangesSaved(false);
             int xPos = x - offsetX;
             int yPos = y - offsetY;
             selectedShape.move(xPos, yPos);
@@ -182,6 +194,7 @@ public class DrawController {
         if (selectedShape == null) {
             return;
         }
+        setChangesSaved(false);
 
         int moveStep = shiftPressed ? 10 : 1;
 
@@ -217,6 +230,15 @@ public class DrawController {
         observers.add(observer);
     }
 
+    public void addStatusObserver(StatusBarObserver observer) {
+        statusObservers.add(observer);
+    }
+
+    public void onFileLoaded() {
+        notifyObserversShapeAdded();
+        notifyObserversShapeFilled();
+    }
+
     private void notifyObserversShapeAdded() {
         for (ShapeObserver observer : observers) {
             observer.shapeAdded();
@@ -241,11 +263,34 @@ public class DrawController {
         }
     }
 
+    private void notifyObserversFillChanged(Color selectedColor) {
+        for (StatusBarObserver observer : statusObservers) {
+            observer.fillChanged(selectedColor);
+        }
+    }
+
+    private void notifyObserversToolChanged(ShapeTool tool) {
+        for (StatusBarObserver observer : statusObservers) {
+            observer.toolChanged(tool);
+        }
+    }
+
+    private void notifyObserversFileSavedStatus(boolean saved) {
+        for (StatusBarObserver observer : statusObservers) {
+            observer.fileSavedStatus(saved);
+        }
+    }
+
     public void setColor(Color color) {
         this.selectedColor = color;
+        notifyObserversFillChanged(color);
         if (selectedShape != null) {
             selectedShape.setFill(color);
             notifyObserversShapeFilled();
         }
+    }
+
+    public boolean isChangesSaved() {
+        return changesSaved;
     }
 }

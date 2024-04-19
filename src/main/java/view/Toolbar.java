@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 
 public class Toolbar extends JToolBar {
 
-    // TODO: Implement toolbar
     Toolbar() {
         super();
         ToolbarController controller = new ToolbarController();

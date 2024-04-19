@@ -2,9 +2,12 @@ package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import model.Shape;
-import model.ShapeAdapter;
+import model.ShapeDeserializer;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,33 +15,38 @@ import java.util.ArrayList;
 
 public class FileController {
 
-    public static void saveJson() {
+    public static void saveJson(String filePath) throws IOException {
         DrawController drawController = DrawController.getInstanceOf();
         ArrayList<Shape> shapes = drawController.getShapes();
 
         Gson gson = new Gson();
         String json = gson.toJson(shapes);
         try {
-            FileWriter writer = new FileWriter("shapes.json");
+            FileWriter writer = new FileWriter(filePath);
             writer.write(json);
             writer.close();
+            drawController.setChangesSaved(true);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException("Failed to save file");
         }
     }
 
-    public static void loadJson() {
+    public static void loadJson(File file) throws IOException {
         DrawController drawController = DrawController.getInstanceOf();
-        Gson gson = new GsonBuilder().registerTypeAdapter(Shape.class, new ShapeAdapter())
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Shape.class, new ShapeDeserializer())
                 .create();
 
         try {
-            Shape[] shapes = gson.fromJson(new FileReader("shapes.json"), Shape[].class);
+            Shape[] shapes = gson.fromJson(new FileReader(file), Shape[].class);
+            drawController.getShapes().clear();
             for (Shape shape : shapes) {
                 drawController.getShapes().add(shape);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            drawController.onFileLoaded();
+            drawController.setChangesSaved(true);
+        } catch (IOException | JsonParseException e) {
+            throw new IOException("Failed to load file");
         }
     }
 }
