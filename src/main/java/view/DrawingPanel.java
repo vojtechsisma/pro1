@@ -15,7 +15,7 @@ public class DrawingPanel extends JPanel implements ShapeObserver {
 
     public DrawingPanel() {
         super();
-        setBackground(Color.BLUE);
+        setBackground(Color.lightGray);
         controller.addObserver(this);
 
         addMouseListener(new MouseAdapter() {

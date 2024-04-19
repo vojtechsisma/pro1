@@ -21,6 +21,8 @@ public class Toolbar extends JToolBar {
         });
         add(removeShape);
 
+        add(Box.createRigidArea(new Dimension(5, 0)));
+
         JButton selectFill = new JButton("Zvolit výplň");
         selectFill.addActionListener(new ActionListener() {
             @Override
@@ -32,6 +34,8 @@ public class Toolbar extends JToolBar {
             }
         });
         add(selectFill);
+
+        add(Box.createRigidArea(new Dimension(5, 0)));
 
         JButton removeFill = new JButton("Zrušit výplň");
         removeFill.addActionListener(new ActionListener() {

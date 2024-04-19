@@ -1,7 +1,6 @@
 package view;
 
 import controller.DrawController;
-import controller.FileController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +14,7 @@ public class MainFrame extends JFrame implements ShapeObserver {
     public MainFrame() {
         DrawController drawController = DrawController.getInstanceOf();
         drawController.addObserver(this);
+        setTitle("Malování");
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
@@ -30,7 +30,6 @@ public class MainFrame extends JFrame implements ShapeObserver {
             }
 
         });
-        this.setLocationRelativeTo(null);
 
         JPanel panel = new DrawingPanel();
 

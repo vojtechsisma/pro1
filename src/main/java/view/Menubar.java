@@ -84,5 +84,17 @@ public class Menubar extends JMenuBar {
         shapes.add(line);
 
         add(shapes);
+
+        JMenuItem help = new JMenuItem("Nápověda");
+        help.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    HelpFrame helpFrame = new HelpFrame();
+                    helpFrame.setVisible(true);
+                });
+            }
+        });
+        add(help);
     }
 }
