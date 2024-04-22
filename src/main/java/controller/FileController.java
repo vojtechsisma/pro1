@@ -3,8 +3,9 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import model.*;
+import model.Rectangle;
 import model.Shape;
-import model.ShapeDeserializer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -75,6 +76,75 @@ public class FileController {
             ImageIO.write(image, "png", file);
         } catch (IOException ex) {
             throw new IOException("Failed to save image");
+        }
+    }
+
+    public static String CSV_DELIMITER = ",";
+
+    public static void saveCsv(String filePath) throws IOException {
+        DrawController drawController = DrawController.getInstanceOf();
+        ArrayList<Shape> shapes = drawController.getShapes();
+        try {
+            FileWriter writer = new FileWriter(filePath);
+            for (Shape shape : shapes) {
+                writer.write(shape.toCsv() + "\n");
+            }
+            writer.close();
+            drawController.setChangesSaved(true);
+        } catch (IOException e) {
+            throw new IOException("Failed to save file");
+        }
+    }
+
+    public static void loadCsv(File file) throws IOException {
+        DrawController drawController = DrawController.getInstanceOf();
+        try {
+            drawController.getShapes().clear();
+            FileReader reader = new FileReader(file);
+            StringBuilder sb = new StringBuilder();
+            int charCode;
+            while ((charCode = reader.read()) != -1) {
+                sb.append((char) charCode);
+            }
+            reader.close();
+            String[] lines = sb.toString().split("\n");
+            for (String line : lines) {
+                switch (line.split(CSV_DELIMITER)[0]) {
+                    case "RECTANGLE" -> drawController.getShapes().add(new Rectangle().fromCsv(line));
+                    case "OVAL" -> drawController.getShapes().add(new Oval().fromCsv(line));
+                    case "LINE" -> drawController.getShapes().add(new Line().fromCsv(line));
+                    default -> throw new IOException("Unknown shape type");
+                }
+            }
+            drawController.onFileLoaded();
+            drawController.setChangesSaved(true);
+        } catch (Exception e) {
+            drawController.getShapes().clear();
+            throw new IOException("Failed to load file");
+        }
+    }
+
+    public static String getFileType(File file) {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
+            return fileName.substring(dotIndex + 1);
+        } else {
+            return "Unknown";
+        }
+    }
+
+    public static void loadFile(File file) throws IOException {
+        String fileType = getFileType(file);
+        switch (fileType) {
+            case "json":
+                loadJson(file);
+                break;
+            case "csv":
+                loadCsv(file);
+                break;
+            default:
+                throw new IOException("Unsupported file type");
         }
     }
 }

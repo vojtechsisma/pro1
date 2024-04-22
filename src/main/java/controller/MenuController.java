@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class MenuController {
     DrawController drawController = DrawController.getInstanceOf();
+
     public void setRectangleTool() {
         drawController.setTool(ShapeTool.RECTANGLE);
     }
@@ -24,11 +25,15 @@ public class MenuController {
         FileController.saveJson(filePath);
     }
 
-    public void loadJson(File file) throws IOException {
-        FileController.loadJson(file);
-    }
-
     public void saveImage(JPanel panel, String filePath) throws IOException {
         FileController.saveImage(panel, filePath);
+    }
+
+    public void saveCsv(String absolutePath) throws IOException {
+        FileController.saveCsv(absolutePath);
+    }
+
+    public void loadFile(File file) throws IOException {
+        FileController.loadFile(file);
     }
 }

@@ -1,10 +1,11 @@
 package model;
 
-import com.google.gson.Gson;
+import controller.FileController;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Line extends Shape {
     private int endX;
@@ -84,10 +85,6 @@ public class Line extends Shape {
         ((Graphics2D) g).setStroke(new BasicStroke());
     }
 
-    public Line fromJson(String json) {
-        return new Gson().fromJson(json, Line.class);
-    }
-
     @Override
     public void move(int newStartX, int newStartY) {
         int deltaX = newStartX - getPosX();
@@ -98,4 +95,28 @@ public class Line extends Shape {
         endY += deltaY;
     }
 
+    @Override
+    public String toCsv() {
+        String[] values = {
+                shape.toString(),
+                String.valueOf(getPosX()),
+                String.valueOf(getPosY()),
+                String.valueOf(getEndX()),
+                String.valueOf(getEndY()),
+                getFill() != null ? String.valueOf(getFill().getRGB()) : "null"
+        };
+
+        return String.join(FileController.CSV_DELIMITER, values);
+    }
+
+    public Line fromCsv(String csv) {
+        String[] values = csv.split(FileController.CSV_DELIMITER);
+        Line line = new Line();
+        line.setPosX(Integer.parseInt(values[1]));
+        line.setPosY(Integer.parseInt(values[2]));
+        line.setEndX(Integer.parseInt(values[3]));
+        line.setEndY(Integer.parseInt(values[4]));
+        line.setFill(!Objects.equals(values[5], "null") ? new Color(Integer.parseInt(values[5])) : null);
+        return line;
+    }
 }

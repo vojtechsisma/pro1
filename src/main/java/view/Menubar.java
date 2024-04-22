@@ -55,25 +55,43 @@ public class Menubar extends JMenuBar {
             }
         });
         save.add(saveImage);
-        file.add(save);
 
-        JMenuItem loadJson = new JMenuItem("Načíst JSON");
-        loadJson.addActionListener(new ActionListener() {
+        JMenuItem saveCsv = new JMenuItem("CSV");
+        saveCsv.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    fileChooser.setSelectedFile(new File("shapes.csv"));
+                    int status = fileChooser.showSaveDialog(null);
+                    if (status == JFileChooser.APPROVE_OPTION) {
+                        controller.saveCsv(fileChooser.getSelectedFile().getAbsolutePath());
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Chyba při ukládání souboru", "Chyba", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        save.add(saveCsv);
+        file.add(save);
+
+        JMenuItem load = new JMenuItem("Načíst soubor");
+        load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
                     fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files", "json"));
                     int status = fileChooser.showOpenDialog(null);
                     if (status == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
-                        controller.loadJson(file);
+                        controller.loadFile(file);
                     }
                 } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "Chyba při načítání JSON souboru", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Chyba při načítání souboru", "Chyba", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        file.add(loadJson);
+        file.add(load);
         add(file);
 
         JMenu shapes = new JMenu("Tvary");

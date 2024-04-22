@@ -1,10 +1,11 @@
 package model;
 
-import com.google.gson.Gson;
+import controller.FileController;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Oval extends Shape {
     private int width;
@@ -39,7 +40,7 @@ public class Oval extends Shape {
 
     @Override
     public String toString() {
-        return "Oval at (" + getPosX() + ", " + getPosY() + ") with width " + width + " and height " + height + " and fill " + getFill();
+        return "Oval at (" + getPosX() + ", " + getPosY() + ") with width " + getWidth() + " and height " + getHeight() + " and fill " + getFill();
     }
 
     @Override
@@ -84,7 +85,28 @@ public class Oval extends Shape {
         ((Graphics2D) g).setStroke(new BasicStroke());
     }
 
-    public Oval fromJson(String json) {
-        return new Gson().fromJson(json, Oval.class);
+    @Override
+    public String toCsv() {
+        String[] values = {
+                shape.toString(),
+                String.valueOf(getPosX()),
+                String.valueOf(getPosY()),
+                String.valueOf(width),
+                String.valueOf(height),
+                getFill() != null ? String.valueOf(getFill().getRGB()) : "null"
+        };
+
+        return String.join(FileController.CSV_DELIMITER, values);
+    }
+
+    public Oval fromCsv(String csv) {
+        String[] values = csv.split(FileController.CSV_DELIMITER);
+        Oval oval = new Oval();
+        oval.setPosX(Integer.parseInt(values[1]));
+        oval.setPosY(Integer.parseInt(values[2]));
+        oval.setWidth(Integer.parseInt(values[3]));
+        oval.setHeight(Integer.parseInt(values[4]));
+        oval.setFill(!Objects.equals(values[5], "null") ? new Color(Integer.parseInt(values[5])) : null);
+        return oval;
     }
 }

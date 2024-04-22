@@ -1,10 +1,11 @@
 package model;
 
-import com.google.gson.Gson;
+import controller.FileController;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Rectangle extends Shape {
     private int width;
@@ -39,7 +40,7 @@ public class Rectangle extends Shape {
 
     @Override
     public String toString() {
-        return "Rectangle at (" + getPosX() + ", " + getPosY() + ") with width " + width + " and height " + height + " and fill " + getFill();
+        return "Rectangle at (" + getPosX() + ", " + getPosY() + ") with width " + getWidth() + " and height " + getHeight() + " and fill " + getFill();
     }
 
     @Override
@@ -84,7 +85,28 @@ public class Rectangle extends Shape {
         ((Graphics2D) g).setStroke(new BasicStroke());
     }
 
-    public Rectangle fromJson(String json) {
-        return new Gson().fromJson(json, Rectangle.class);
+    @Override
+    public String toCsv() {
+        String[] values = {
+                shape.toString(),
+                String.valueOf(getPosX()),
+                String.valueOf(getPosY()),
+                String.valueOf(width),
+                String.valueOf(height),
+                getFill() != null ? String.valueOf(getFill().getRGB()) : "null"
+        };
+
+        return String.join(FileController.CSV_DELIMITER, values);
+    }
+
+    public Rectangle fromCsv(String csv) {
+        String[] values = csv.split(FileController.CSV_DELIMITER);
+        Rectangle rectangle = new Rectangle();
+        rectangle.setPosX(Integer.parseInt(values[1]));
+        rectangle.setPosY(Integer.parseInt(values[2]));
+        rectangle.setWidth(Integer.parseInt(values[3]));
+        rectangle.setHeight(Integer.parseInt(values[4]));
+        rectangle.setFill(!Objects.equals(values[5], "null") ? new Color(Integer.parseInt(values[5])) : null);
+        return rectangle;
     }
 }

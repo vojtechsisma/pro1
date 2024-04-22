@@ -1,6 +1,5 @@
 package model;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
 import controller.DrawController;
 
@@ -61,7 +60,5 @@ public abstract class Shape {
         posY = y;
     }
 
-    public String toJson() {
-        return new Gson().toJson(this);
-    }
+    abstract public String toCsv();
 }
