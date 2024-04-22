@@ -16,7 +16,7 @@ public class DrawController {
     private static DrawController instance;
     private final List<ShapeObserver> observers;
     private final List<StatusBarObserver> statusObservers;
-    private final ArrayList<Shape> shapes;
+    private final ShapeStoreController shapeStore;
     private Shape selectedShape = null;
     private Shape shapeToDraw = null;
     private int startX, startY, endX, endY;
@@ -26,7 +26,7 @@ public class DrawController {
     private boolean changesSaved = true;
 
     private DrawController() {
-        shapes = new ArrayList<>();
+        shapeStore = new ShapeStoreController();
         observers = new ArrayList<>();
         statusObservers = new ArrayList<>();
     }
@@ -44,12 +44,12 @@ public class DrawController {
     }
 
     public ArrayList<Shape> getShapes() {
-        return shapes;
+        return shapeStore.getShapes();
     }
 
     public void removeSelectedShape() {
-        shapes.remove(selectedShape);
-        selectedShape = shapes.isEmpty() ? null : shapes.get(shapes.size() - 1);
+        shapeStore.remove(selectedShape);
+        selectedShape = shapeStore.isEmpty() ? null : shapeStore.getLastShape();
         notifyObserversShapeRemoved();
     }
 
@@ -59,7 +59,7 @@ public class DrawController {
     }
 
     public int getSelectedShapeIndex() {
-        return shapes.indexOf(selectedShape);
+        return shapeStore.getSelectedShapeIndex();
     }
 
     public Shape getSelectedShape() {
@@ -105,7 +105,7 @@ public class DrawController {
             }
         }
 
-        for (Shape shape : shapes) {
+        for (Shape shape : shapeStore.getShapes()) {
             shape.draw(g2d);
         }
     }
@@ -137,7 +137,7 @@ public class DrawController {
 
     public boolean handleMouseSelection(int x, int y) {
         isDrawing = false;
-        for (Shape shape : shapes) {
+        for (Shape shape : shapeStore.getShapes()) {
             if (shape.contains(x, y)) {
                 setSelectedShape(shape);
                 selectedColor = shape.getFill();
@@ -165,7 +165,7 @@ public class DrawController {
             return;
         }
 
-        shapes.add(shapeToDraw);
+        shapeStore.addShape(shapeToDraw);
         setChangesSaved(false);
         setSelectedShape(shapeToDraw);
         notifyObserversShapeAdded();
