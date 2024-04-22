@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class StatusBar extends JPanel implements StatusBarObserver {
     static final String toolText = "Nástroj: ";
-    JLabel toolLabel = new JLabel(toolText + ShapeTool.RECTANGLE);
+    JLabel toolLabel = new JLabel(toolText + getToolName(ShapeTool.RECTANGLE));
     static final String fillText = "Výplň: ";
     JLabel fillLabel = new JLabel(fillText + "N/A");
     static final String fileSaveText = "Uloženo: ";
@@ -50,6 +50,15 @@ public class StatusBar extends JPanel implements StatusBarObserver {
 
     @Override
     public void toolChanged(ShapeTool tool) {
-        toolLabel.setText(toolText + tool);
+        toolLabel.setText(toolText + getToolName(tool));
+    }
+
+    private String getToolName(ShapeTool tool) {
+        return switch (tool) {
+            case RECTANGLE -> "Obdélník";
+            case OVAL -> "Ovál";
+            case LINE -> "Úsečka";
+            default -> "N/A";
+        };
     }
 }
