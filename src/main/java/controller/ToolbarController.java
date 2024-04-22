@@ -1,5 +1,7 @@
 package controller;
 
+import model.ShapeTool;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,5 +18,17 @@ public class ToolbarController {
 
     public void setColor(Color color) {
         drawController.setColor(color);
+    }
+
+    public void setRectangleTool() {
+        drawController.setTool(ShapeTool.RECTANGLE);
+    }
+
+    public void setOvalTool() {
+        drawController.setTool(ShapeTool.OVAL);
+    }
+
+    public void setLineTool() {
+        drawController.setTool(ShapeTool.LINE);
     }
 }
