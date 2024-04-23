@@ -28,6 +28,9 @@ public class Menubar extends JMenuBar {
             public void actionPerformed(ActionEvent e) {
                 try {
                     fileChooser.setSelectedFile(new File("shapes.json"));
+                    fileChooser.resetChoosableFileFilters();
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files", "json"));
                     int status = fileChooser.showSaveDialog(null);
                     if (status == JFileChooser.APPROVE_OPTION) {
                         controller.saveJson(fileChooser.getSelectedFile().getAbsolutePath());
@@ -45,6 +48,9 @@ public class Menubar extends JMenuBar {
             public void actionPerformed(ActionEvent e) {
                 try {
                     fileChooser.setSelectedFile(new File("image.png"));
+                    fileChooser.resetChoosableFileFilters();
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("PNG files", "png"));
                     int status = fileChooser.showSaveDialog(null);
                     if (status == JFileChooser.APPROVE_OPTION) {
                         controller.saveImage(parent, fileChooser.getSelectedFile().getAbsolutePath());
@@ -62,6 +68,9 @@ public class Menubar extends JMenuBar {
             public void actionPerformed(ActionEvent e) {
                 try {
                     fileChooser.setSelectedFile(new File("shapes.csv"));
+                    fileChooser.resetChoosableFileFilters();
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
                     int status = fileChooser.showSaveDialog(null);
                     if (status == JFileChooser.APPROVE_OPTION) {
                         controller.saveCsv(fileChooser.getSelectedFile().getAbsolutePath());
@@ -79,6 +88,7 @@ public class Menubar extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    fileChooser.resetChoosableFileFilters();
                     fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
                     fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files", "json"));
                     int status = fileChooser.showOpenDialog(null);
