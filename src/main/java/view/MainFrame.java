@@ -15,6 +15,7 @@ public class MainFrame extends JFrame implements ShapeObserver {
         DrawController drawController = DrawController.getInstanceOf();
         drawController.addObserver(this);
         setTitle("Malování");
+        setMinimumSize(new Dimension(900, 900));
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
