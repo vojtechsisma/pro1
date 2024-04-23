@@ -216,6 +216,7 @@ public class DrawController {
                 notifyObserversShapeMoved();
                 break;
             case VK_DELETE:
+            case VK_BACK_SPACE:
                 removeSelectedShape();
                 break;
             case VK_SHIFT:
