@@ -21,8 +21,12 @@ public class FileController {
 
     public static void saveJson(String filePath) throws IOException {
         DrawController drawController = DrawController.getInstanceOf();
-        ArrayList<Shape> shapes = drawController.getShapes();
 
+        if (!filePath.endsWith(".json")) {
+            filePath += ".json";
+        }
+
+        ArrayList<Shape> shapes = drawController.getShapes();
         Gson gson = new Gson();
         String json = gson.toJson(shapes);
         try {
@@ -56,6 +60,11 @@ public class FileController {
 
     public static void saveImage(JPanel panel, String filePath) throws IOException {
         DrawController drawController = DrawController.getInstanceOf();
+
+        if (!filePath.endsWith(".png")) {
+            filePath += ".png";
+        }
+
         Dimension size = panel.getSize();
 
         BufferedImage image = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
@@ -83,6 +92,11 @@ public class FileController {
 
     public static void saveCsv(String filePath) throws IOException {
         DrawController drawController = DrawController.getInstanceOf();
+
+        if (!filePath.endsWith(".csv")) {
+            filePath += ".csv";
+        }
+
         ArrayList<Shape> shapes = drawController.getShapes();
         try {
             FileWriter writer = new FileWriter(filePath);
